@@ -39,9 +39,36 @@ angular.module('starter.controllers', [])
   $scope.current.humidity = 85.3;
 })
 
+.controller('MileageFormCtrl', function($scope, $stateParams) {
+  $scope.vehicles = [
+    {'value':1, 'verbose':'1994 Ford E-350 R/V'},
+    {'value':1, 'verbose':'2011 Toyota Prius'},
+    {'value':1, 'verbose':'1997 Hondea Civic'}
+  ];
+
+  $scope.entry = {};
+  $scope.entry.date = "12/12/2014";
+  $scope.entry.time = "12:12:12";
+
+  $scope.$watch('entry', function(newVal){
+    if (newVal.tripDist && newVal.fuelAmount) {
+      var mpg = newVal.tripDist / newVal.fuelAmount;
+      $scope.entry.mpg = mpg;
+    }
+    if (newVal.unitPrice && newVal.fuelAmount) {
+      var totalPrice = newVal.unitPrice * newVal.fuelAmount;
+      $scope.entry.totalPrice = totalPrice;
+    }
+    if (newVal.unitPrice && newVal.fuelAmount && newVal.tripDist) {
+      $scope.entry.ppm = totalPrice/newVal.tripDist;
+    }
+
+
+  }, 'true');
+})
+
 .controller('GraphsCtrl', function($scope, $stateParams) {
 })
 
 .controller('SettingsCtrl', function($scope, $stateParams) {
 });
-

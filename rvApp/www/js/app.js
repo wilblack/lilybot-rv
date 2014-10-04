@@ -39,6 +39,25 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     })
 
+    .state('app.mileage', {
+      url: "/mileage",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/mileage.html"
+        }
+      }
+    })
+
+    .state('app.mileage-form', {
+      url: "/mileage/form",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/mileage-form.html",
+          controller: 'MileageFormCtrl'
+        }
+      }
+    })
+
     .state('app.settings', {
       url: "/settings",
       views: {
