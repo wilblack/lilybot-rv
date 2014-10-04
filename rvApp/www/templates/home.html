@@ -3,7 +3,23 @@
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-    Current Readings
-    
+    <div class="card">
+      <div class="item item-divider">
+        Temperature
+      </div>
+      <div class="item item-text-wrap">
+        {{current.temp}} &deg;C
+      </div>
+    </div>
+
+     <div class="card">
+      <div class="item item-divider">
+        Humidity
+      </div>
+      <div class="item item-text-wrap">
+        {{current.humidity}}% 
+      </div>
+    </div>
+
   </ion-content>
 </ion-view>
