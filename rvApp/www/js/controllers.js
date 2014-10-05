@@ -1,8 +1,11 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, profile) {
   // Form data for the login modal
   $scope.loginData = {};
+
+  // Load date from local storage
+  profile.load();
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -37,19 +40,20 @@ angular.module('starter.controllers', [])
   $scope.current = {};
   $scope.current.temp = 26.1;
   $scope.current.humidity = 85.3;
+  $scope.current.pressure = 101;
 })
 
-.controller('MileageFormCtrl', function($scope, $stateParams) {
-  $scope.vehicles = [
-    {'value':1, 'verbose':'1994 Ford E-350 R/V'},
-    {'value':1, 'verbose':'2011 Toyota Prius'},
-    {'value':1, 'verbose':'1997 Hondea Civic'}
-  ];
-
+.controller('MileageFormCtrl', function($scope, $stateParams, profile) {
   $scope.entry = {};
+
+  $scope.profile = profile.profile;
+  // $scope.vehicles = profile.vehicles;
+  
+  // Load default values
   $scope.entry.date = "12/12/2014";
   $scope.entry.time = "12:12:12";
-
+  $scope.entry.vehicle = $scope.profile.defaults.vehicle;
+  
   $scope.$watch('entry', function(newVal){
     if (newVal.tripDist && newVal.fuelAmount) {
       var mpg = newVal.tripDist / newVal.fuelAmount;

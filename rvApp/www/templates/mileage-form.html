@@ -1,0 +1,68 @@
+<ion-view title="Enter Mileage">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <h1>Enter Milage</h1>
+
+    <form name="form" novalidate>
+        <div class="list">
+
+          <label class="item item-input">
+            <span class="input-label">Vehicle</span>
+            <select name="vehicle" ng-model='entry.vehicle'>
+            <option ng-repeat="obj in profile.vehicles" value='{{obj.value}}'>{{obj.verbose}}</option>
+            </select>
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">Date</span>
+            <input type="date" name="date" ng-model="entry.date">
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">Time</span>
+            <input type="time" name="time" ng-model='entry.time'>
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">Odometer</span>
+            <input type="number" name="odometer" ng-model='entry.odometer' required>
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">Trip Dist</span>
+            <input type="number" name="tripDist" ng-model='entry.tripDist' required>
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">Gallons</span>
+            <input type="number" name="fuelAmount" ng-model='entry.fuelAmount' required>
+          </label>
+
+          <label class="item item-input">
+            <span class="input-label">$/Gal</span>
+            <input type="number" name="unitPrice" ng-model='entry.unitPrice' required>
+          </label>
+        </div>
+        <div class="row">
+            <div class="col">MPG</div>
+            <div class="col">{{entry.mpg | number:1 }}</div>
+        </div>
+        <div class="row">
+            <div class="col">Total Price</div>
+            <div class="col">{{entry.totalPrice | currency:"$" }}</div>
+        </div>
+        <div class="row">
+            <div class="col">$/mile</div>
+            <div class="col">{{entry.ppm | currency:"$" }}</div>
+        </div>
+
+        <div class="button-bar">
+            <button class="button" ng-click="cancel()">Cancel</button>
+            <button class="button button-positive" ng-click="update(user)">Save</button>
+        </div>
+    </form>
+    
+  </ion-content>
+</ion-view>

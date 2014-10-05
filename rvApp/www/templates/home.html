@@ -3,21 +3,45 @@
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-    <div class="card">
-      <div class="item item-divider">
-        Temperature
+    <div class="row">
+      <div class="card">
+        <div class="centered item item-divider">
+          Temperature
+        </div>
+        <div class="item item-text-wrap">
+          {{current.temp}} &deg;C
+        </div>
       </div>
-      <div class="item item-text-wrap">
-        {{current.temp}} &deg;C
-      </div>
+    
     </div>
 
-     <div class="card">
-      <div class="item item-divider">
-        Humidity
+    <div class="row">
+      <div class="col-50">
+        <div class="card">
+          <div class="item item-divider">
+            Humidity
+          </div>
+          <div class="item item-text-wrap">
+            {{current.humidity | number: 1}}% 
+          </div>
+        </div>
       </div>
-      <div class="item item-text-wrap">
-        {{current.humidity}}% 
+
+      <div class="col-50">
+        <div class="card">
+          <div class="item item-divider">
+            Barom
+          </div>
+          <div class="item item-text-wrap">
+            {{current.pressure | number: 1}} kPa
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col col-33 col-offset-33">
+        <a class="button button-positive" href="#/app/mileage/form">Enter Mileage</a> 
       </div>
     </div>
 
