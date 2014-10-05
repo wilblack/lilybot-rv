@@ -43,7 +43,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.services'])
       url: "/mileage",
       views: {
         'menuContent' :{
-          templateUrl: "templates/mileage.html"
+          templateUrl: "templates/mileage.html",
+          controller: 'MileageCtrl'
         }
       }
     })

@@ -21,6 +21,64 @@ angular.module('app.services', [])
     }
 }])
 
-.factory( 'mileage', ['$http', function($http) {
+.factory( 'mileage', ['$http', '$localStorage', '$filter', function($http, $localStorage, $filter) {
+    var mileage = {};
 
+    save = function(entry){
+        if (!entry.cid || typeof(entry.cid) !=='string'){
+            // This is an update so just save it.
+            entry.cid = 'mileage_' + $filter("date")(Date.now(), 'yyyyMMddhhmmss');
+        }
+
+        // Load mileage logs and append entry then save the whole thing.
+
+        mileage.logs.push(entry);
+        $localStorage.setObject('mileage', mileage);
+    };
+
+    getByCid = function(cid){
+        //$localStorage.getObject(cid);
+
+    }
+
+    load = function(callback) {
+        mileage = $localStorage.getObject('mileage');
+        if (typeof(mileage.logs) === 'undefined') {
+            // Create it
+            mileage.logs = [];
+            $localStorage.setObject('mileage', mileage);
+        }
+        callback(mileage.logs);
+    }
+
+    getLogs = function(){
+        logs = mileage.logs;
+        return logs;
+    }
+
+    return {
+        save:save,
+        getByCid:getByCid,
+        load:load,
+        logs: getLogs()
+    }
+
+}])
+
+
+.factory('$localStorage', ['$window', function($window) {
+  return {
+    set: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    setObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key) {
+      return JSON.parse($window.localStorage[key] || '{}');
+    }
+  }
 }]);

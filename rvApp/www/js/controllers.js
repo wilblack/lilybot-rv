@@ -43,17 +43,28 @@ angular.module('starter.controllers', [])
   $scope.current.pressure = 101;
 })
 
-.controller('MileageFormCtrl', function($scope, $stateParams, profile) {
+.controller('MileageCtrl', function($scope, mileage) {
+  // Load mileageLogs 
+  mileage.load(function(logs){
+    $scope.mileage = logs;
+  });
+
+  
+})
+
+.controller('MileageFormCtrl', function($scope, $stateParams, $filter, profile, mileage) {
   $scope.entry = {};
 
   $scope.profile = profile.profile;
   // $scope.vehicles = profile.vehicles;
   
   // Load default values
-  $scope.entry.date = "12/12/2014";
-  $scope.entry.time = "12:12:12";
+  $scope.entry.date = $filter("date")(Date.now(), 'yyyy-MM-dd');// Date.today().toString("MM/dd/yyyy");
+  $scope.entry.time = $filter("date")(Date.now(), 'hh:mm:ss');
   $scope.entry.vehicle = $scope.profile.defaults.vehicle;
   
+
+  // Watch ofr any changes and update computed values.
   $scope.$watch('entry', function(newVal){
     if (newVal.tripDist && newVal.fuelAmount) {
       var mpg = newVal.tripDist / newVal.fuelAmount;
@@ -67,8 +78,14 @@ angular.module('starter.controllers', [])
       $scope.entry.ppm = totalPrice/newVal.tripDist;
     }
 
-
   }, 'true');
+
+
+  $scope.saveMileageForm = function(){
+    mileage.save($scope.entry);
+  };
+
+
 })
 
 .controller('GraphsCtrl', function($scope, $stateParams) {
