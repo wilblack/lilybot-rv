@@ -37,9 +37,12 @@ angular.module('app.services', [])
     };
 
     getByCid = function(cid){
-        //$localStorage.getObject(cid);
-
+        log = _.find(mileage.logs, function(log){
+            return (log.cid === cid);
+        });
+        return log;
     }
+
 
     load = function(callback) {
         mileage = $localStorage.getObject('mileage');
@@ -56,9 +59,17 @@ angular.module('app.services', [])
         return logs;
     }
 
+    deleteByCid = function(cid){
+        var log = getByCid(cid);
+        var index = _.indexOf(log, mileage.logs);
+        mileage.logs.splice(index, 1);
+        $localStorage.setObject('mileage', mileage);
+    }
+
     return {
         save:save,
         getByCid:getByCid,
+        deleteByCid:deleteByCid,
         load:load,
         logs: getLogs()
     }

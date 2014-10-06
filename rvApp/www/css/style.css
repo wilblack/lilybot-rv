@@ -1,6 +1,20 @@
 /* Empty. Add your own CSS if you like */
 
 
+
+
+/**********************************
+Surgical
+**********************************/
+.small {
+    font-size:0.8em;
+}
+
+.margin-bottom {
+    margin-bottom:1em;
+}
+
+
 /*****************************************
 Forms
 *****************************************/
@@ -25,3 +39,10 @@ Cards
 .row>.card {
     width:100%;
 }
+
+
+
+.large-stat {
+    font-size: 2em;
+}
+

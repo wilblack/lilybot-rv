@@ -3,8 +3,25 @@
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-    <h1>Mileage</h1>
+    <div class="list card">
+        <a href="#/app/mileage/form/{{log.cid}}/" class="item" ng-repeat="log in mileage">
+            
+            <div class="row margin-bottom">
+                <div class="large-stat col-50 energized">{{log.mpg | number: 1}}</div>
+                <div class="large-stat col-50 energized">{{log.ppm | number: 1}}</div>
+            </div>
 
-    <div ng-repeat="log in mileage">{{log.cid}}</div>
+            <div class="rowmargin-bottom">
+                <div class="col-50 dark">MPG</div>
+                <div class="col-50 dark">$ PER MILE</div>
+            </div>
+
+            <div class="row">
+                <div class="col-33 dark small">{{log.date | date: "MM/dd/yyyy" }} {{log.time | date : "'at' h:mma"}}</div>
+                <div class="col-33 col-offset-33 dark small">{{log.odometer}}</div>
+            </div>
+
+        </a>
+    </div>
   </ion-content>
 </ion-view>

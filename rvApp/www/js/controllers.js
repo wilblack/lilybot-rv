@@ -1,12 +1,15 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, profile) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, profile, mileage) {
   // Form data for the login modal
   $scope.loginData = {};
 
   // Load date from local storage
   profile.load();
-
+  mileage.load(function(logs){
+    console.log("Initial mileage loading");
+    console.table(logs);
+  });
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -52,38 +55,87 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('MileageFormCtrl', function($scope, $stateParams, $filter, profile, mileage) {
+.controller('MileageFormCtrl', function($scope, $stateParams, $state, $filter, $ionicModal, $location, profile, mileage) {
   $scope.entry = {};
+  $scope.cid = $stateParams.cid;
 
   $scope.profile = profile.profile;
-  // $scope.vehicles = profile.vehicles;
   
   // Load default values
-  $scope.entry.date = $filter("date")(Date.now(), 'yyyy-MM-dd');// Date.today().toString("MM/dd/yyyy");
-  $scope.entry.time = $filter("date")(Date.now(), 'hh:mm:ss');
-  $scope.entry.vehicle = $scope.profile.defaults.vehicle;
+  if ($scope.cid) {
+    // Get the mielage log from memory (i.e. not localStorage)
+    
+    // Load mileageLogs from localStorage. This needs to be fixed.
+    mileage.load(function(logs){
+      $scope.mileage = logs;
+      $scope.entry = mileage.getByCid($scope.cid);
+    });
+  } else {
+    $scope.entry.date = $filter("date")(Date.now(), 'yyyy-MM-dd');// Date.today().toString("MM/dd/yyyy");
+    $scope.entry.time = $filter("date")(Date.now(), 'hh:mm:ss');
+    $scope.entry.vehicle = $scope.profile.defaults.vehicle;  
+  }
   
+  // Watch for any changes and update computed values.
+  $scope.$watch('entry', function(newVal, oldVal){
+    if (oldVal !== newVal){ // This keeps it from evaluting on the inital load.
+      if (newVal.tripDist && newVal.fuelAmount) {
+        var mpg = newVal.tripDist / newVal.fuelAmount;
+        $scope.entry.mpg = mpg;
+      }
+      if (newVal.unitPrice && newVal.fuelAmount) {
+        var totalPrice = newVal.unitPrice * newVal.fuelAmount;
+        $scope.entry.totalPrice = totalPrice;
+      }
+      if (newVal.unitPrice && newVal.fuelAmount && newVal.tripDist) {
+        $scope.entry.ppm = totalPrice/newVal.tripDist;
+      }
+  }
+  
+  // Delete modal stuff
+  $ionicModal.fromTemplateUrl('delete-modal.html', {
+      scope: $scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.modal = modal;
+    });
+    $scope.openModal = function() {
+      $scope.modal.show();
+    };
+    $scope.closeModal = function(action) {
+      if (action === 'delete') {
+        console.log('make it go away');
+        mileage.deleteByCid($scope.entry.cid);
+        $state.go("app.mileage");
 
-  // Watch ofr any changes and update computed values.
-  $scope.$watch('entry', function(newVal){
-    if (newVal.tripDist && newVal.fuelAmount) {
-      var mpg = newVal.tripDist / newVal.fuelAmount;
-      $scope.entry.mpg = mpg;
+      }
+      $scope.modal.hide();
+
+    };
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function() {
+      $scope.modal.remove();
+    });
+    // Execute action on hide modal
+    $scope.$on('modal.hidden', function() {
+      // Execute action
+    });
+    // Execute action on remove modal
+    $scope.$on('modal.removed', function() {
+      // Execute action
+    });
+
+    }, 'true');
+
+
+    $scope.saveMileageForm = function(){
+      mileage.save($scope.entry);
+      $state.go("app.mileage");
+    };
+
+    $scope.deleteCallback = function(cid){
+      $scope.openModal();
     }
-    if (newVal.unitPrice && newVal.fuelAmount) {
-      var totalPrice = newVal.unitPrice * newVal.fuelAmount;
-      $scope.entry.totalPrice = totalPrice;
-    }
-    if (newVal.unitPrice && newVal.fuelAmount && newVal.tripDist) {
-      $scope.entry.ppm = totalPrice/newVal.tripDist;
-    }
-
-  }, 'true');
-
-
-  $scope.saveMileageForm = function(){
-    mileage.save($scope.entry);
-  };
 
 
 })
@@ -91,5 +143,10 @@ angular.module('starter.controllers', [])
 .controller('GraphsCtrl', function($scope, $stateParams) {
 })
 
-.controller('SettingsCtrl', function($scope, $stateParams) {
+.controller('SettingsCtrl', function($scope, $stateParams, mileage) {
+  $scope.clearLocalStorage = function(){
+    localStorage.clear();
+    mileage.load();
+    $scope.message = "Local Storage Cleared"
+  };
 });
