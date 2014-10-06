@@ -5,13 +5,12 @@
   <ion-content class="has-header">
     <div class="list card">
         <a href="#/app/mileage/form/{{log.cid}}/" class="item" ng-repeat="log in mileage">
-            
             <div class="row margin-bottom">
                 <div class="large-stat col-50 energized">{{log.mpg | number: 1}}</div>
                 <div class="large-stat col-50 energized">{{log.ppm | number: 1}}</div>
             </div>
 
-            <div class="rowmargin-bottom">
+            <div class="row margin-bottom">
                 <div class="col-50 dark">MPG</div>
                 <div class="col-50 dark">$ PER MILE</div>
             </div>
@@ -20,7 +19,13 @@
                 <div class="col-33 dark small">{{log.date | date: "MM/dd/yyyy" }} {{log.time | date : "'at' h:mma"}}</div>
                 <div class="col-33 col-offset-33 dark small">{{log.odometer}}</div>
             </div>
+            <div class="row">
+                <div class="dark small">{{log.uuid}}</div>
+            </div>
+        </a>
 
+        <a href="#/app/mileage/form" class="item">
+        Add Record
         </a>
     </div>
   </ion-content>

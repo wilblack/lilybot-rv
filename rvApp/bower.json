@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "datejs": "~1.0.0-rc1",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "apigee-sdk": "~2.0.9"
   }
 }

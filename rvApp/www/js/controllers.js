@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, profile, mileage) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $apigee, profile, mileage) {
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -9,7 +9,13 @@ angular.module('starter.controllers', [])
   mileage.load(function(logs){
     console.log("Initial mileage loading");
     console.table(logs);
+    console.log(JSON.stringify(logs));
   });
+    
+  // API Authenticate
+  $apigee.authenticate();
+
+
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -48,6 +54,7 @@ angular.module('starter.controllers', [])
 
 .controller('MileageCtrl', function($scope, mileage) {
   // Load mileageLogs 
+  //$scope.mileage = [];
   mileage.load(function(logs){
     $scope.mileage = logs;
   });
@@ -136,17 +143,24 @@ angular.module('starter.controllers', [])
     $scope.deleteCallback = function(cid){
       $scope.openModal();
     }
-
-
 })
 
 .controller('GraphsCtrl', function($scope, $stateParams) {
 })
 
-.controller('SettingsCtrl', function($scope, $stateParams, mileage) {
+.controller('SettingsCtrl', function($scope, $stateParams, $apigee, mileage) {
   $scope.clearLocalStorage = function(){
     localStorage.clear();
-    mileage.load();
-    $scope.message = "Local Storage Cleared"
+    mileage.load(function(){
+      $scope.message = "Local Storage Cleared";
+    });
+    
   };
+
+  $scope.updateApigee = function(){
+    $scope.message = '';
+    $apigee.update();
+    $scope.message = 'WTF?'
+  };
+
 });

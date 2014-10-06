@@ -28,11 +28,13 @@ angular.module('app.services', [])
         if (!entry.cid || typeof(entry.cid) !=='string'){
             // This is an update so just save it.
             entry.cid = 'mileage_' + $filter("date")(Date.now(), 'yyyyMMddhhmmss');
+            mileage.logs.push(entry);
+        } else {
+            // Update the correct milage record
+            var old_log = getByCid(entry.cid); 
+            var index = _.indexOf(old_log, mileage.logs);
+            mileage.logs[index] = entry;
         }
-
-        // Load mileage logs and append entry then save the whole thing.
-
-        mileage.logs.push(entry);
         $localStorage.setObject('mileage', mileage);
     };
 
@@ -42,7 +44,6 @@ angular.module('app.services', [])
         });
         return log;
     }
-
 
     load = function(callback) {
         mileage = $localStorage.getObject('mileage');
@@ -92,4 +93,45 @@ angular.module('app.services', [])
       return JSON.parse($window.localStorage[key] || '{}');
     }
   }
+}])
+
+.factory('$apigee', ['mileage', function(mileage) {
+    var dataClient;
+    authenticate = function(){
+        var client_creds = {
+            orgName:'wilblack',
+            appName:'sandbox'
+        }
+
+        //Initializes the SDK. Also instantiates Apigee.MonitoringClient
+        
+        dataClient = new Apigee.Client(client_creds);
+        //update();
+    }
+
+    update = function(){
+        mileage.load(function(data){
+            // Loop over logs to get server ids.
+            var apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
+
+            apiLogs.addEntity(data[0], function (error, response) {
+                    if (error) {
+                        console.log('write failed');
+                    } else {
+                        console.log('write worked');
+                        data[0].uuid = response.entities[0].uuid;
+                        mileage.save(data[0]);
+
+                    }
+                    console.log(response)
+                });
+        })
+    }
+
+    return {
+        authenticate: authenticate,
+        update:update
+    }
 }]);
+
+    
