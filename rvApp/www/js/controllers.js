@@ -45,11 +45,13 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('HomeCtrl', function($scope) {
+.controller('HomeCtrl', function($scope, $ardyh) {
   $scope.current = {};
   $scope.current.temp = 26.1;
   $scope.current.humidity = 85.3;
   $scope.current.pressure = 101;
+
+
 })
 
 .controller('MileageCtrl', function($scope, mileage) {

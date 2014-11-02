@@ -1,0 +1,26 @@
+{
+  "name": "apigee.sdk",
+  "version": "2.0.9",
+  "main": [
+    "apigee.js",
+    "apigee.min.js"
+  ],
+  "ignore": [
+    "Gruntfile.js",
+    "*.md",
+    "package.json",
+    "LICENSE",
+    ".gitignore"
+  ],
+  "homepage": "https://github.com/apigee/apigee-javascript-sdk",
+  "_release": "2.0.9",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.9",
+    "commit": "188eec36394a95e880a72280c572bef6a308212a"
+  },
+  "_source": "git://github.com/apigee/apigee-javascript-sdk.git",
+  "_target": "~2.0.9",
+  "_originalSource": "apigee-sdk",
+  "_direct": true
+}
