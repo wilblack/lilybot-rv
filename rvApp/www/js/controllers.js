@@ -45,17 +45,29 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('HomeCtrl', function($rootScope, $scope, $ardyh) {
+.controller('HomeCtrl', function($rootScope, $scope, $ardyh, ardyhConf) {
     $scope.current = {};
     $scope.current.temp = "--";
     $scope.current.humidity = "--";
     $scope.current.pressure = "--";
+
+    $scope.series = [];
 
     $rootScope.$on('new-sensor-values', function(event, data){
         console.log("Received new sensor values.");
         $scope.$apply(function(){
             $scope.current.temp = data.message.kwargs.temp;
             $scope.current.humidity = data.message.kwargs.humidity;
+            $scope.current.timestamp = new Date(data.timestamp);
+            $scope.series.push({
+                'timestamp':$scope.current.timestamp, 
+                'temp': $scope.current.temp,
+                'humidity': $scope.current.humidity
+            });
+
+            if ($scope.series.length > ardyhConf.seriesLength){
+                $scope.series.shift();
+            }
         })
         
         console.log($scope.current.temp);

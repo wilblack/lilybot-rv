@@ -8,6 +8,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'app.services', 'ardy
 
 .constant('ardyhConf', {
   'domain': '162.243.146.219:9093',
+  'seriesLength': 10
 })
 
 .run(function($ionicPlatform) {
