@@ -47,17 +47,45 @@ angular.module('starter.controllers', [])
 
 .controller('HomeCtrl', function($rootScope, $scope, $ardyh, ardyhConf) {
     $scope.current = {};
+    $scope.units = {'temp':'f'};
+
     $scope.current.temp = "--";
     $scope.current.humidity = "--";
     $scope.current.pressure = "--";
 
     $scope.graphs = {
-        'temp':[
-            {
-                'key':'Temp (C)',
-                'values': []
+        'temp':[{
+            'key':'Temp (C)',
+            'values': []
+        }],
+        'humidity':[{
+            'key':'Humidity',
+            'values': []
+        }],
+        'light':[{
+            'key':'Light',
+            'values': []
+        }]
+    };
+
+    $scope.xAxisTickFormatFunction = function(){
+        return function(d){
+            return new Date(d).toString("hh:mm tt")
+        }
+    }
+
+    $scope.toggleUnits = function(sensor) {
+        if (sensor === 'temp') {
+            if ($scope.units.temp === 'c') {
+                $scope.units.temp = 'f';
+            } else {
+                $scope.units.temp = 'c';
             }
-        ]
+        }
+    };
+
+    $scope.celsius2fahrenheit = function(t){
+        return t*(9/5) + 32;
     };
 
     $rootScope.$on('new-sensor-values', function(event, data){
@@ -66,16 +94,13 @@ angular.module('starter.controllers', [])
             $scope.current.temp = data.message.kwargs.temp;
             $scope.current.humidity = data.message.kwargs.humidity;
             $scope.current.timestamp = new Date(data.timestamp);
+            
             $scope.graphs.temp[0].values.push([$scope.current.timestamp.valueOf(), $scope.current.temp]);
-
-            // $scope.series.push({
-            //     'timestamp':$scope.current.timestamp, 
-            //     'temp': $scope.current.temp,
-            //     'humidity': $scope.current.humidity
-            // });
-
+            $scope.graphs.humidity[0].values.push([$scope.current.timestamp.valueOf(), $scope.current.humidity]);
+            $scope.graphs.light[0].values.push([$scope.current.timestamp.valueOf(), data.message.kwargs.light]);
+            
             if ($scope.graphs.temp[0].values.length > ardyhConf.seriesLength){
-                 $scope.graphs.temp.values.shift();
+                 $scope.graphs.temp[0].values.shift();
             }
         });
         

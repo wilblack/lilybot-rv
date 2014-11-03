@@ -4,12 +4,13 @@
   </ion-nav-buttons>
   <ion-content class="has-header">
     <div class="row">
-      <div class="card">
+      <div class="card" ng-click="toggleUnits('temp');">
         <div class="centered item item-divider">
           Temperature
         </div>
         <div class="item item-text-wrap">
-          {{current.temp}} &deg;C
+          <div class="large-stat energized" ng-show="units.temp === 'c'">{{current.temp | number: 1}} &deg;C</div>
+          <div class="large-stat energized" ng-show="units.temp === 'f'">{{celsius2fahrenheit(current.temp) | number: 1}} &deg;F</div>
         </div>
       </div>
     
@@ -21,7 +22,7 @@
           <div class="item item-divider">
             Humidity
           </div>
-          <div class="item item-text-wrap">
+          <div class="item item-text-wrap large-stat energized">
             {{current.humidity | number: 1}}% 
           </div>
         </div>
@@ -32,7 +33,7 @@
           <div class="item item-divider">
             Barom
           </div>
-          <div class="item item-text-wrap">
+          <div class="item item-text-wrap large-stat energized">
             {{current.pressure | number: 1}} kPa
           </div>
         </div>
@@ -44,9 +45,32 @@
         data="graphs.temp"
         showXAxis="true"
         showYAxis="true"
+        xAxisTickFormat="xAxisTickFormatFunction()"
         tooltips="true"
+        objectequality="true"
         interactive="true">
       </nvd3-line-chart>
+
+      <nvd3-line-chart
+        data="graphs.humidity"
+        showXAxis="true"
+        showYAxis="true"
+        xAxisTickFormat="xAxisTickFormatFunction()"
+        tooltips="true"
+        objectequality="true"
+        interactive="true">
+      </nvd3-line-chart>
+
+      <nvd3-line-chart
+        data="graphs.light"
+        showXAxis="true"
+        showYAxis="true"
+        xAxisTickFormat="xAxisTickFormatFunction()"
+        tooltips="true"
+        objectequality="true"
+        interactive="true">
+      </nvd3-line-chart>
+
     </div>
 
     <div class="padding"> 
