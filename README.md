@@ -7,4 +7,11 @@ A lilybot mobile app for R/V monitoring
 
 ```
 ionic serve
+
+```
+
+## To build the android app
+
+```
+ionic build android
 ```

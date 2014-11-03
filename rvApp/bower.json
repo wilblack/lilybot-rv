@@ -7,6 +7,9 @@
   "dependencies": {
     "datejs": "~1.0.0-rc1",
     "underscore": "~1.7.0",
-    "apigee-sdk": "~2.0.9"
+    "apigee-sdk": "~2.0.9",
+    "d3": "~3.4.13",
+    "nvd3": "~1.1.15-beta",
+    "angularjs-nvd3-directives": "~0.0.7"
   }
 }

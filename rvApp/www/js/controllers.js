@@ -51,7 +51,14 @@ angular.module('starter.controllers', [])
     $scope.current.humidity = "--";
     $scope.current.pressure = "--";
 
-    $scope.series = [];
+    $scope.graphs = {
+        'temp':[
+            {
+                'key':'Temp (C)',
+                'values': []
+            }
+        ]
+    };
 
     $rootScope.$on('new-sensor-values', function(event, data){
         console.log("Received new sensor values.");
@@ -59,16 +66,18 @@ angular.module('starter.controllers', [])
             $scope.current.temp = data.message.kwargs.temp;
             $scope.current.humidity = data.message.kwargs.humidity;
             $scope.current.timestamp = new Date(data.timestamp);
-            $scope.series.push({
-                'timestamp':$scope.current.timestamp, 
-                'temp': $scope.current.temp,
-                'humidity': $scope.current.humidity
-            });
+            $scope.graphs.temp[0].values.push([$scope.current.timestamp.valueOf(), $scope.current.temp]);
 
-            if ($scope.series.length > ardyhConf.seriesLength){
-                $scope.series.shift();
+            // $scope.series.push({
+            //     'timestamp':$scope.current.timestamp, 
+            //     'temp': $scope.current.temp,
+            //     'humidity': $scope.current.humidity
+            // });
+
+            if ($scope.graphs.temp[0].values.length > ardyhConf.seriesLength){
+                 $scope.graphs.temp.values.shift();
             }
-        })
+        });
         
         console.log($scope.current.temp);
     });
