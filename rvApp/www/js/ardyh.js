@@ -11,7 +11,8 @@ var service = angular.module('ardyh.service', []).
 
 // This example is taken from https://github.com/totaljs/examples/tree/master/angularjs-websocket
 service.
-    service('$ardyh', ['$rootScope', '$timeout', '$http', 'ardyhConf', function($rootScope, $timeout, $http) {
+    service('$ardyh', ['$rootScope', '$timeout', '$http', 'ardyhConf', 
+        function($rootScope, $timeout, $http, ardyhConf) {
     
         
     var obj = this;
@@ -21,10 +22,10 @@ service.
 
     this.host =  'ws://'+ ardyhConf.domain +'/ws';
 
-    this.sendHandshake = function(botNsmr) {
+    this.sendHandshake = function(botName) {
         var message = {'handshake':true,
-                       'bot_name':bot_name,
-                       'subscriptions':['rp3.solalla.ardyh'],
+                       'bot_name':obj.botName,
+                       'subscriptions':['rpi3.solalla.ardyh'],
                        'bot_roles': []
         }
         obj.socket.send(JSON.stringify(message));
@@ -58,6 +59,7 @@ service.
                 
 
             */
+            console.log(msg);
             try {
               var data = JSON.parse(msg.data);
               var message = data.message;
@@ -70,9 +72,7 @@ service.
                 return
             }
             if (command === 'sensor_values') {
-                $rootScope.$apply(function() {
-                    $scope.broadcast('new-sensors-values', {'data':data})
-                )};
+               $rootScope.$broadcast('new-sensor-values', data);
             }
         }
 
@@ -90,7 +90,6 @@ service.
             this.showReadyState("error");
         }
 
-        obj.sendHandshake('rv-app.ardyh.solalla')
     }
 
     this.send = function(messageObj) {

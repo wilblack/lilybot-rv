@@ -45,12 +45,21 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('HomeCtrl', function($scope, $ardyh) {
-  $scope.current = {};
-  $scope.current.temp = 26.1;
-  $scope.current.humidity = 85.3;
-  $scope.current.pressure = 101;
+.controller('HomeCtrl', function($rootScope, $scope, $ardyh) {
+    $scope.current = {};
+    $scope.current.temp = "--";
+    $scope.current.humidity = "--";
+    $scope.current.pressure = "--";
 
+    $rootScope.$on('new-sensor-values', function(event, data){
+        console.log("Received new sensor values.");
+        $scope.$apply(function(){
+            $scope.current.temp = data.message.kwargs.temp;
+            $scope.current.humidity = data.message.kwargs.humidity;
+        })
+        
+        console.log($scope.current.temp);
+    });
 
 })
 
