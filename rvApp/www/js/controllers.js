@@ -193,31 +193,52 @@ angular.module('starter.controllers', [])
 
 
     $scope.saveMileageForm = function(){
-      mileage.save($scope.entry);
-      $state.go("app.mileage");
+        mileage.save($scope.entry);
+        $state.go("app.mileage");
     };
 
     $scope.deleteCallback = function(cid){
-      $scope.openModal();
+        $scope.openModal();
     }
 })
 
 .controller('GraphsCtrl', function($scope, $stateParams) {
 })
 
-.controller('SettingsCtrl', function($scope, $stateParams, $apigee, mileage) {
-  $scope.clearLocalStorage = function(){
-    localStorage.clear();
-    mileage.load(function(){
-      $scope.message = "Local Storage Cleared";
-    });
-    
-  };
+.controller('SettingsCtrl', function($scope, $stateParams, $apigee, mileage, $ardyh, ardyhConf) {
+    $scope.settingsForm = {};
+    $scope.settingsForm.updateDt = ardyhConf.updateDt;
+    $scope.settingsForm.maxHistory = ardyhConf.maxHistory;
 
-  $scope.updateApigee = function(){
-    $scope.message = '';
-    $apigee.update();
-    $scope.message = 'WTF?'
-  };
+
+
+
+    $scope.clearLocalStorage = function(){
+        localStorage.clear();
+        mileage.load(function(){
+            $scope.message = "Local Storage Cleared";
+        });
+    };
+
+
+    $scope.updateApigee = function(){
+        $scope.message = '';
+        $apigee.update();
+        $scope.message = 'WTF?'
+    };
+
+    $scope.sendCommand = $ardyh.sendCommand
+    
+
+    // $scope.shutdownBot = function(){
+        
+    //         Shutdown a given lilybot
+        
+    //     console.log("[shutdownBot]")
+    //     $ardyh.sendCommand('shutdown');
+    // }
+
+
+
 
 });

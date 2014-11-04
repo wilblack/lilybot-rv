@@ -3,11 +3,51 @@
     <button menu-toggle="left"class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-  <div class="padding">
-          <button class="button button-assertive button-block" ng-click="clearLocalStorage();">Reset App</button>
-          <button class="button button-assertive button-block" ng-click="updateApigee();">Update Apigee</button>
-  </div>
-  <div class="padding" ng-show="message">{{message}}</div>
+    <form name="form" ng-submit="settingForm.submit()"> 
+        <div class="padding row">
+            <div class="col-50 padding">
+                <label>Update Period
+                    <input type="integer" ng-model="settingsForm.updateDt" min="2" >
+                </label>
+            </div>
+
+            <div class="col-50 padding">
+                <label>Max History Length
+                    <input type="integer" ng-model="settingsForm.maxHistory" min='1'>
+                </label>
+            </div>
+
+        </div>
+
+        
+
+        <div class="padding row">
+            <div class="padding col col-50 col-offset-25">
+                <input type='submit' class="button button-block" value="Update Settings">
+            </div>
+        </div>
+    </form>
+    <hr>
+
+    <div class="padding row">
+        <div class="col-50 padding">
+            <button class="button icon ion-loop button-block" ng-click='sendCommand("restart")'></button>
+        </div>
+        <div class="col-50 padding">
+            <button class="button icon ion-power button-block" ng-click='sendCommand("shutdown")'></button>
+        </div>
+    </div>
+
+    <div class="padding row">
+        <div class="col-50 padding">
+            <button class="button button-assertive button-block" ng-click="clearLocalStorage();">Reset App</button>
+        </div>
+        <div class="col-50 padding">
+            <button class="button button-assertive button-block" ng-click="updateApigee();">Update Apigee</button>
+        </div>
+    </div>
+
+    <div class="padding" ng-show="message">{{message}}</div>
 
   </ion-content>
 </ion-view>

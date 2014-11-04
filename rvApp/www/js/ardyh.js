@@ -99,10 +99,18 @@ service.
             console.log("Could not send message, ready state = "+obj.socket.readyState);
             if (obj.socket.readyState === 3){
                 // Web socket is closed so try to re-establish connection
-                console.log("I should reconnect here.")
+                console.log("I should reconnect here.");
+                $timeout(function(){
+                    obj.init(obj.botName);
+                }, 5*1000);
             }
         }
     };
+
+    this.sendCommand = function(command, kwargs){
+        kwargs = kwargs || {};
+        obj.send({'command':command, 'kwargs':kwargs});
+    }
 
     this.init('rv-app.ardyh.solalla')
 
