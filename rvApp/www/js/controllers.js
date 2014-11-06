@@ -45,13 +45,15 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('HomeCtrl', function($rootScope, $scope, $ardyh, ardyhConf) {
+.controller('HomeCtrl', function($rootScope, $scope, $ardyh, $sensorValues, ardyhConf) {
     $scope.current = {};
     $scope.units = {'temp':'f'};
 
     $scope.current.temp = "--";
     $scope.current.humidity = "--";
     $scope.current.pressure = "--";
+
+    $sensorValues.load();
 
     $scope.graphs = {
         'temp':[{

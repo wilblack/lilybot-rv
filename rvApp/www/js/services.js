@@ -95,9 +95,17 @@ angular.module('app.services', [])
   }
 }])
 
-.factory('$apigee', ['mileage', function(mileage) {
+.service('$apigee', ['mileage', function(mileage) {
     var dataClient;
-    authenticate = function(){
+    this.apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
+    this.sensorValues = new Apigee.Collection( { "client":dataClient, "type":"sensor_values" } );
+
+    this.init = function(){
+        this.apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
+        this.sensorValues = new Apigee.Collection( { "client":dataClient, "type":"sensor_values" } );
+    }
+
+    this.authenticate = function(){
         var client_creds = {
             orgName:'wilblack',
             appName:'sandbox'
@@ -109,10 +117,10 @@ angular.module('app.services', [])
         //update();
     }
 
-    update = function(){
+    this.update = function(){
         mileage.load(function(data){
             // Loop over logs to get server ids.
-            var apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
+            
 
             apiLogs.addEntity(data[0], function (error, response) {
                     if (error) {
@@ -127,11 +135,25 @@ angular.module('app.services', [])
                 });
         })
     }
+}])
 
-    return {
-        authenticate: authenticate,
-        update:update
-    }
-}]);
 
-    
+.service('$sensorValues', ['$apigee', 'ardyhConf', function($apigee, ardyhConf) {
+    this.object = [];
+
+    this.load = function(){
+        
+        $apigee.init();
+
+        size = ardyhConf.maxHistory-2;
+        $apigee.sensorValues.fetch(
+            function(err, data){
+                if (err) {
+                    alert("read failed");
+                } else {
+                    this.objects = $apigee.sensorValues._list;
+                }
+        })
+    };
+
+}])
