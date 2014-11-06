@@ -52,9 +52,6 @@ angular.module('starter.controllers', [])
     $scope.current.temp = "--";
     $scope.current.humidity = "--";
     $scope.current.pressure = "--";
-
-    $sensorValues.load();
-
     $scope.graphs = {
         'temp':[{
             'key':'Temp (C)',
@@ -69,6 +66,11 @@ angular.module('starter.controllers', [])
             'values': []
         }]
     };
+
+    $sensorValues.load(function(){
+        console.log("onLoad")
+        $scope.graphs = $sensorValues.graphs;
+    });
 
     $scope.xAxisTickFormatFunction = function(){
         return function(d){
@@ -103,6 +105,12 @@ angular.module('starter.controllers', [])
             
             if ($scope.graphs.temp[0].values.length > ardyhConf.seriesLength){
                  $scope.graphs.temp[0].values.shift();
+            }
+            if ($scope.graphs.humidity[0].values.length > ardyhConf.seriesLength){
+                 $scope.graphs.humidity[0].values.shift();
+            }
+            if ($scope.graphs.light[0].values.length > ardyhConf.seriesLength){
+                 $scope.graphs.light[0].values.shift();
             }
         });
         

@@ -95,7 +95,7 @@ angular.module('app.services', [])
   }
 }])
 
-.service('$apigee', ['mileage', function(mileage) {
+.service('$apigee', ['$http', 'mileage', function($http, mileage) {
     var dataClient;
     this.apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
     this.sensorValues = new Apigee.Collection( { "client":dataClient, "type":"sensor_values" } );
@@ -135,25 +135,105 @@ angular.module('app.services', [])
                 });
         })
     }
+
+
+    this.fetchSensorValues =function(success, fail){
+        var token = "YWMt8USt4mXZEeSqRMXRgyEyEQAAAUmqMIDPeLqe2CVrVacBzWm9yxhDF9fRBJ4"
+        var url = "https://api.usergrid.com/wilblack/sandbox/sensor_values"
+        
+        url = url + "?acess_token=" + token + "&limit=400";
+        url += "&ql=order by timestamp desc";
+        //var config = {headers: {'Authorization':'Token ' + user.token}};
+        
+        $http.get(url).success(function(data, status){
+            success(data, status);
+        })
+        .error(function(data, status){
+            fail(data, status);
+        });
+    }
+
 }])
 
 
 .service('$sensorValues', ['$apigee', 'ardyhConf', function($apigee, ardyhConf) {
+    var obj = this;
     this.object = [];
+    this.isLoaded = false;
+    this.graphs = {
+        'temp':[{
+            'key':'Temp (C)',
+            'values': []
+        }],
+        'humidity':[{
+            'key':'Humidity',
+            'values': []
+        }],
+        'light':[{
+            'key':'Light',
+            'values': []
+        }]
+    };
 
-    this.load = function(){
-        
+
+    this.load = function(onLoad){
+        obj.isLoaded = false;
         $apigee.init();
 
         size = ardyhConf.maxHistory-2;
-        $apigee.sensorValues.fetch(
-            function(err, data){
-                if (err) {
-                    alert("read failed");
-                } else {
-                    this.objects = $apigee.sensorValues._list;
-                }
-        })
+
+        $apigee.fetchSensorValues(function(data, status){
+                
+                obj.objects = data.entities.reverse();
+                console.log(obj.objects[0], obj.objects[390])
+                _.each(obj.objects, function(entity){
+                    try {
+                        var values = entity.message.kwargs
+                    } catch(e) {
+                        console.log("Could not find sensor values.")
+                        console.log(e);
+                        return;
+                    }
+                    
+                    var timestamp = new Date(entity.timestamp);
+
+                    obj.graphs.temp[0].values.push([timestamp.valueOf(), values.temp]);
+                    obj.graphs.humidity[0].values.push([timestamp.valueOf(), values.humidity]);
+                    obj.graphs.light[0].values.push([timestamp.valueOf(), values.light]);
+                });
+                onLoad();
+        });
+
+        // $apigee.sensorValues.fetch(
+        //     function(err, data){
+        //         if (err) {
+        //             alert("read failed");
+        //         } else {
+        //             obj.objects = $apigee.sensorValues._list;
+        //         }
+
+        //         _.each(obj.objects, function(entity){
+                    
+        //             try {
+        //                 var values = entity._data.message.kwargs
+        //             } catch(e) {
+        //                 console.log("Could not find sensor values.")
+        //                 console.log(e);
+        //                 return;
+        //             }
+                    
+        //             var timestamp = new Date(entity._data.timestamp);
+
+        //             obj.graphs.temp[0].values.push([timestamp.valueOf(), values.temp]);
+        //             obj.graphs.humidity[0].values.push([timestamp.valueOf(), values.humidity]);
+        //             obj.graphs.light[0].values.push([timestamp.valueOf(), values.light]);
+        //         });
+        //         onLoad();
+                
+        // })
     };
+
+
+
 
 }])
