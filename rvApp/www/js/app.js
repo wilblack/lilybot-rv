@@ -4,12 +4,19 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'app.services', 'ardyh.service', 'nvd3ChartDirectives'])
+angular.module('starter', ['ionic', 
+                           'starter.controllers', 
+                           'app.services', 
+                           'apigee.services',
+                           'ardyh.services',
+                           'nvd3ChartDirectives'])
 
 .constant('ardyhConf', {
-  'domain': '162.243.146.219:9093',
-  'maxHistory': 500,
-  'updateDt':10
+    'settings' : {
+        'domain': '162.243.146.219:9093',
+        'maxHistory': 500,
+        'updateDt':10    
+    }
 })
 
 .run(function($ionicPlatform) {

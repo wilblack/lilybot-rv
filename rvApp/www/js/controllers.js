@@ -45,13 +45,15 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('HomeCtrl', function($rootScope, $scope, $ardyh, $sensorValues, ardyhConf) {
+.controller('HomeCtrl', function($rootScope, $scope, $ardyh, $sensorValues, ardyhConf, $localStorage) {
     $scope.current = {};
     $scope.units = {'temp':'f'};
 
     $scope.current.temp = "--";
     $scope.current.humidity = "--";
     $scope.current.pressure = "--";
+    
+
     $scope.graphs = {
         'temp':[{
             'key':'Temp (C)',
@@ -65,6 +67,11 @@ angular.module('starter.controllers', [])
             'key':'Light',
             'values': []
         }]
+    };
+    var settings = $localStorage.getObject('settings');
+    
+    if (typeof(settings.maxHistory) === 'undefined'){
+        $localStorage.setObject('settings', ardyhConf.settings);
     };
 
     $sensorValues.load(function(){
@@ -91,30 +98,14 @@ angular.module('starter.controllers', [])
     $scope.celsius2fahrenheit = function(t){
         return t*(9/5) + 32;
     };
-
     $rootScope.$on('new-sensor-values', function(event, data){
-        console.log("Received new sensor values.");
-        $scope.$apply(function(){
-            $scope.current.temp = data.message.kwargs.temp;
-            $scope.current.humidity = data.message.kwargs.humidity;
-            $scope.current.timestamp = new Date(data.timestamp);
-            
-            $scope.graphs.temp[0].values.push([$scope.current.timestamp.valueOf(), $scope.current.temp]);
-            $scope.graphs.humidity[0].values.push([$scope.current.timestamp.valueOf(), $scope.current.humidity]);
-            $scope.graphs.light[0].values.push([$scope.current.timestamp.valueOf(), data.message.kwargs.light]);
-            
-            if ($scope.graphs.temp[0].values.length > ardyhConf.seriesLength){
-                 $scope.graphs.temp[0].values.shift();
-            }
-            if ($scope.graphs.humidity[0].values.length > ardyhConf.seriesLength){
-                 $scope.graphs.humidity[0].values.shift();
-            }
-            if ($scope.graphs.light[0].values.length > ardyhConf.seriesLength){
-                 $scope.graphs.light[0].values.shift();
-            }
-        });
-        
-        console.log($scope.current.temp);
+        $scope.current.temp = data.message.kwargs.temp;
+        $scope.current.humidity = data.message.kwargs.humidity;
+        $scope.current.timestamp = new Date(data.timestamp);
+    });
+
+    $rootScope.$on('graphs-updated', function(event, data){
+        $scope.graphs = $sensorValues.graphs;
     });
 
 })
@@ -215,13 +206,25 @@ angular.module('starter.controllers', [])
 .controller('GraphsCtrl', function($scope, $stateParams) {
 })
 
-.controller('SettingsCtrl', function($scope, $stateParams, $apigee, mileage, $ardyh, ardyhConf) {
-    $scope.settingsForm = {};
-    $scope.settingsForm.updateDt = ardyhConf.updateDt;
-    $scope.settingsForm.maxHistory = ardyhConf.maxHistory;
+.controller('SettingsCtrl', function($rootScope, $scope, $stateParams, $apigee, mileage, $ardyh, ardyhConf, $localStorage) {
+    $scope.settingsForm = $localStorage.getObject('settings');
+    // $scope.settingsForm.updateDt = ardyhConf.updateDt;
+    // $scope.settingsForm.maxHistory = ardyhConf.maxHistory;
 
+    $scope.settingsForm.submit = function(){
+        console.log("In settingsForm.submit")
+        
+        var settings = $localStorage.getObject('settings');
+        if (settings.maxHistory !== $scope.settingsForm.maxHistory) {
+            settings.maxHistory = $scope.settingsForm.maxHistory;    
+            $rootScope.$broadcast("max-history-update");
+        }
 
+        settings.updateDt = $scope.settingsForm.updateDt;
+        
+        $localStorage.setObject('settings', settings);
 
+    }
 
     $scope.clearLocalStorage = function(){
         localStorage.clear();
@@ -238,7 +241,7 @@ angular.module('starter.controllers', [])
     };
 
     $scope.sendCommand = $ardyh.sendCommand
-    
+     
 
     // $scope.shutdownBot = function(){
         
