@@ -75,7 +75,6 @@ angular.module('starter.controllers', [])
     };
 
     $sensorValues.load(function(){
-        console.log("onLoad")
         $scope.graphs = $sensorValues.graphs;
     });
 
@@ -212,8 +211,6 @@ angular.module('starter.controllers', [])
     // $scope.settingsForm.maxHistory = ardyhConf.maxHistory;
 
     $scope.settingsForm.submit = function(){
-        console.log("In settingsForm.submit")
-        
         var settings = $localStorage.getObject('settings');
         if (settings.maxHistory !== $scope.settingsForm.maxHistory) {
             settings.maxHistory = $scope.settingsForm.maxHistory;    

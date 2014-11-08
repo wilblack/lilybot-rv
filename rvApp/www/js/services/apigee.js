@@ -26,8 +26,6 @@ angular.module('apigee.services', [])
     this.update = function(){
         mileage.load(function(data){
             // Loop over logs to get server ids.
-            
-
             apiLogs.addEntity(data[0], function (error, response) {
                     if (error) {
                         console.log('write failed');
@@ -128,14 +126,12 @@ angular.module('apigee.services', [])
 
 
     $rootScope.$on('new-sensor-values', function(event, data){
-        console.log("[$sensor-values] Received new sensor values.");
         $rootScope.$apply(function(){
             obj.updateGraph(data);
         });
     });
 
     $rootScope.$on('max-history-update', function(event, data){
-        console.log("[max-history-update]");
         obj.objects = [];
     });
 }]);

@@ -53,7 +53,6 @@ service.
                         missedHeartbeats++;
                         if (missedHeartbeats >= 3)
                             throw new Error("Too many missed heartbeats.");
-                        console.log('sending heartbeat, missedHeartbeats: '+missedHeartbeats)
                         var msg = {'heartbeat':'', 'bot_name':obj.botName}
                         obj.send(msg);
                     } catch(e) {
@@ -90,12 +89,9 @@ service.
                 console.log('[onmessage] Could not parse to JSON. Ignoring');
                 console.log(data);
             }
-            console.log("WTF")
-            console.log(msg)
+
             if ('heartbeat' in data) {
-                console.log("[onmessage] Reseting heartbeats")
                 missedHeartbeats = 0;
-                console.log(missedHeartbeats)
                 return;
             }
 
