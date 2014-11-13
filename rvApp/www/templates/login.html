@@ -13,6 +13,8 @@
             <span class="input-label">Password</span>
             <input type="password" ng-model="loginData.password">
           </label>
+          <ion-checkbox ng-model="loginData.stayLoggedIn">Stay Logged In</ion-checkbox>
+
           <p class="error">{{errorMsg}}</p>
           <label class="item">
             <button class="button button-block button-positive" type="submit">Log in</button>

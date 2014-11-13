@@ -10,13 +10,15 @@ angular.module('app.services', [])
         profile:null,
     };
 
-    this.login = function(username, password, callback){
+    this.login = function(username, password, stayLoggedIn, callback){
         $apigee.login(username, password, function(error, resp){
 
             if (!error){
                 obj.object.username = resp.user.username;
                 obj.object.token = resp.access_token;
-                $localStorage.setObject('user',obj.object);
+                if (stayLoggedIn){
+                    $localStorage.setObject('user', obj.object);
+                }
             }
             callback(error, resp);
         });
