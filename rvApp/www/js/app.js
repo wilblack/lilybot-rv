@@ -53,6 +53,16 @@ angular.module('starter', ['ionic',
         }
       }
     })
+    
+    .state('app.login', {
+      url: "/login",
+      views: {
+        'menuContent' :{
+          templateUrl: "templates/login.html",
+          controller: 'LoginCtrl'
+        }
+      }
+    })
 
     .state('app.mileage', {
       url: "/mileage",
@@ -100,6 +110,19 @@ angular.module('starter', ['ionic',
         'menuContent' :{
           templateUrl: "templates/home.html",
           controller: 'HomeCtrl'
+        }
+      },
+      resolve: {
+        hasToken: function($user, $stateParams, $location){
+            if($user.object.token) return;
+            $user.load(function(res){
+                if (res.token){
+                    console.log('found token')
+                } else {
+                    $location.path("/app/login");
+                    return false;
+                }
+            });
         }
       }
     });

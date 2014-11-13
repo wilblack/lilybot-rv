@@ -1,42 +1,47 @@
 angular.module('apigee.services', [])
 .service('$apigee', ['$http', '$localStorage', 'mileage', function($http, $localStorage, mileage) {
     var obj = this;
-    var dataClient;
+    
 
-    this.apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
-    this.sensorValues = new Apigee.Collection( { "client":dataClient, "type":"sensor_values" } );
+    this.clientCreds = {
+        orgName:'wilblack',
+        appName:'sandbox'
+    };
+
+
+    //this.apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
+    //this.sensorValues = new Apigee.Collection( { "client":dataClient, "type":"sensor_values" } );
 
     this.init = function(){
         this.apiLogs = new Apigee.Collection( { "client":dataClient, "type":"mileage" } );
         this.sensorValues = new Apigee.Collection( { "client":dataClient, "type":"sensor_values" } );
-    }
+    };
 
     this.authenticate = function(){
-        var client_creds = {
-            orgName:'wilblack',
-            appName:'sandbox'
-        }
-
-        //Initializes the SDK. Also instantiates Apigee.MonitoringClient
-        
-        dataClient = new Apigee.Client(client_creds);
+        //Initializes the SDK. Also instantiates Apigee.MonitoringClient        
+        this.dataClient = new Apigee.Client(obj.clientCreds);
         //update();
-    }
+    };
+
+    this.login = function(username, password, callback){
+        obj.dataClient = new Apigee.Client(obj.clientCreds);
+        obj.dataClient.login(username, password, callback);
+    };
 
     this.update = function(){
         mileage.load(function(data){
             // Loop over logs to get server ids.
             apiLogs.addEntity(data[0], function (error, response) {
-                    if (error) {
-                        console.log('write failed');
-                    } else {
-                        console.log('write worked');
-                        data[0].uuid = response.entities[0].uuid;
-                        mileage.save(data[0]);
+                if (error) {
+                    console.log('write failed');
+                } else {
+                    console.log('write worked');
+                    data[0].uuid = response.entities[0].uuid;
+                    mileage.save(data[0]);
 
-                    }
-                    console.log(response)
-                });
+                }
+                console.log(response)
+            });
         })
     }
 

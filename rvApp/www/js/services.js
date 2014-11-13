@@ -1,5 +1,34 @@
 angular.module('app.services', [])
 
+
+.service('$user', function($apigee, $localStorage){
+    obj = this;
+
+    this.object = {
+        username:null,
+        token:null,
+        profile:null,
+    };
+
+    this.login = function(username, password, callback){
+        $apigee.login(username, password, function(error, resp){
+
+            if (!error){
+                obj.object.username = resp.user.username;
+                obj.object.token = resp.access_token;
+                $localStorage.setObject('user',obj.object);
+            }
+            callback(error, resp);
+        });
+    }
+
+    this.load = function(callback){
+        obj.object = $localStorage.getObject('user');
+        callback(obj.object);
+    }
+})
+
+
 .factory( 'profile', ['$http', function($http) {
     
     var profile = {vehicles:[], defaults: {}};
