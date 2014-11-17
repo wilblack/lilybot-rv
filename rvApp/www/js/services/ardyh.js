@@ -107,6 +107,7 @@ service.
             
             if (command === 'sensor_values') {
                console.log("broadcasting new-sensor-values")
+
                $rootScope.$broadcast('new-sensor-values', data);
             }
         }

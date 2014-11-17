@@ -10,7 +10,7 @@ angular.module('starter.controllers')
     $scope.refreshSensorValues = function(){
         $ardyh.sendCommand('read_sensors')
     }
-    
+
     $scope.graphs = {
         'temp':[{
             'key':'Temp (C)',
@@ -32,7 +32,9 @@ angular.module('starter.controllers')
     };
 
     $sensorValues.load(function(){
+        $scope.refreshSensorValues();
         $scope.graphs = $sensorValues.graphs;
+        
     });
 
     $scope.xAxisTickFormatFunction = function(){
@@ -55,13 +57,17 @@ angular.module('starter.controllers')
         return t*(9/5) + 32;
     };
     $rootScope.$on('new-sensor-values', function(event, data){
-        $scope.current.temp = data.message.kwargs.temp;
-        $scope.current.humidity = data.message.kwargs.humidity;
-        $scope.current.timestamp = new Date(data.timestamp);
+        $scope.$apply(function(){ // Needed this because the $braodcast is on he $rootScope
+            $scope.current.temp = data.message.kwargs.temp;
+            $scope.current.humidity = data.message.kwargs.humidity;
+            $scope.current.timestamp = new Date(data.timestamp);
+        })
+        
     });
 
     $rootScope.$on('graphs-updated', function(event, data){
         $scope.graphs = $sensorValues.graphs;
     });
-    $scope.refreshSensorValues();
+
+    
 })

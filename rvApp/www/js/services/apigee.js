@@ -101,9 +101,12 @@ angular.module('apigee.services', [])
         var maxHistory = $localStorage.getObject('settings').maxHistory;
         var timestamp = new Date(entity.timestamp);
 
+        var light = values.light
+        if (typeof(light) === 'number' && light > 10000) light = null;
+
         obj.graphs.temp[0].values.push([timestamp.valueOf(), values.temp]);
         obj.graphs.humidity[0].values.push([timestamp.valueOf(), values.humidity]);
-        obj.graphs.light[0].values.push([timestamp.valueOf(), values.light]);
+        obj.graphs.light[0].values.push([timestamp.valueOf(), light]);
 
         if (obj.graphs.temp[0].values.length > maxHistory){
              obj.graphs.temp[0].values.shift();
