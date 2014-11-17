@@ -1,5 +1,5 @@
 angular.module('starter.controllers')
-.controller('HomeCtrl', function($rootScope, $scope, $ardyh, $sensorValues, ardyhConf, $localStorage, $user) {
+.controller('HomeCtrl', function($rootScope, $scope, $ardyh, $sensorValues, ardyhConf, $localStorage, $user, $ionicLoading) {
     $scope.current = {};
     $scope.units = {'temp':'f'};
 
@@ -10,6 +10,7 @@ angular.module('starter.controllers')
     $scope.refreshSensorValues = function(){
         $ardyh.sendCommand('read_sensors')
     }
+    $scope.refreshSensorValues();
 
     $scope.graphs = {
         'temp':[{

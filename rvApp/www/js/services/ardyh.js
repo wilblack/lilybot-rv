@@ -86,7 +86,7 @@ service.
             try {
                 var data = JSON.parse(msg.data);
             } catch(e){
-                console.log('[onmessage] Could not parse to JSON. Ignoring');
+                console.log('[onmessage] Could not parse to JSON. data type is '+typeof(data)+'  Ignoring.');
                 console.log(data);
             }
 
@@ -95,11 +95,10 @@ service.
                 return;
             }
 
+            var command = null;
             try {
-              var message = data.message;
               var bot_name = data.bot_name;
-              var command = message.command; 
-
+              command = data.message.command; 
             } catch (e) {
                 console.log("[onmessage] Could not parse message")
                 console.log(data)
@@ -107,6 +106,7 @@ service.
             }
             
             if (command === 'sensor_values') {
+               console.log("broadcasting new-sensor-values")
                $rootScope.$broadcast('new-sensor-values', data);
             }
         }

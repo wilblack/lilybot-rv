@@ -1,5 +1,5 @@
 angular.module('apigee.services', [])
-.service('$apigee', ['$http', '$localStorage', 'mileage', function($http, $localStorage, mileage) {
+.service('$apigee', ['$http', '$localStorage', 'mileage', '$ionicLoading', function($http, $localStorage, mileage, $ionicLoading) {
     var obj = this;
     
 
@@ -47,6 +47,9 @@ angular.module('apigee.services', [])
 
 
     this.fetchSensorValues =function(success, fail){
+        $ionicLoading.show({
+            template: 'Loading...'
+        });
         var token = "YWMt8USt4mXZEeSqRMXRgyEyEQAAAUmqMIDPeLqe2CVrVacBzWm9yxhDF9fRBJ4"
         var url = "https://api.usergrid.com/wilblack/sandbox/sensor_values"
         var limit = $localStorage.getObject('settings').maxHistory;
@@ -57,9 +60,11 @@ angular.module('apigee.services', [])
         
         $http.get(url).success(function(data, status){
             success(data, status);
+            $ionicLoading.hide();
         })
         .error(function(data, status){
             fail(data, status);
+            $ionicLoading.hide();
         });
     }
 
