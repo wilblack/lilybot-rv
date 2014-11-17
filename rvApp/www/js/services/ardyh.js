@@ -100,7 +100,7 @@ service.
               var bot_name = data.bot_name;
               command = data.message.command; 
             } catch (e) {
-                console.log("[onmessage] Could not parse message")
+                console.log("[onmessage] Could not find bot_name or command in message")
                 console.log(data)
                 return
             }

@@ -10,8 +10,7 @@ angular.module('starter.controllers')
     $scope.refreshSensorValues = function(){
         $ardyh.sendCommand('read_sensors')
     }
-    $scope.refreshSensorValues();
-
+    
     $scope.graphs = {
         'temp':[{
             'key':'Temp (C)',
@@ -64,5 +63,5 @@ angular.module('starter.controllers')
     $rootScope.$on('graphs-updated', function(event, data){
         $scope.graphs = $sensorValues.graphs;
     });
-
+    $scope.refreshSensorValues();
 })
